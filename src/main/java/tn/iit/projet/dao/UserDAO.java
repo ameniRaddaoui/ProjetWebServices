@@ -13,5 +13,7 @@ import tn.iit.projet.entities.User;
 public interface UserDAO extends JpaRepository<User, Long>
 {
 	List<User> findByUsername(String username);
+	
+	User getUserByLogin(String password);
 }
 
