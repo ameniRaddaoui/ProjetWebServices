@@ -14,7 +14,7 @@ import tn.iit.projet.entities.User;
 public class indexController {
 	
 	//
-	
+	//
 	@Autowired
 	private UserDAO userRepo;
 
