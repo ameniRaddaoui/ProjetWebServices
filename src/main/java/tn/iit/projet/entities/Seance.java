@@ -1,60 +1,30 @@
 package tn.iit.projet.entities;
 
-import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Seance implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Seance {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String libelleSeance;
-	private String heureDebut;
-	private String heureFin;
-	private String date;
 
-	public Seance(String libelleSeance, String heureDebut, String heureFin, String date) {
-		super();
-		this.libelleSeance = libelleSeance;
-		this.heureDebut = heureDebut;
-		this.heureFin = heureFin;
-		this.date = date;
-	}
+	private String libelle;
 
-	public Seance() {
-		super();
-	}
+	private Date heure_debut;
 
-	public Seance(Long id, String libelleSeance, String heureDebut, String heureFin, String date) {
-		super();
-		this.id = id;
-		this.libelleSeance = libelleSeance;
-		this.heureDebut = heureDebut;
-		this.heureFin = heureFin;
-		this.date = date;
-	}
+	private Date heure_fin;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((heureDebut == null) ? 0 : heureDebut.hashCode());
-		result = prime * result + ((heureFin == null) ? 0 : heureFin.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((libelleSeance == null) ? 0 : libelleSeance.hashCode());
-		return result;
-	}
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "seance")
+	List<Cours> cours;
 
 	public Long getId() {
 		return id;
@@ -64,36 +34,44 @@ public class Seance implements Serializable {
 		this.id = id;
 	}
 
-	public String getLibelleSeance() {
-		return libelleSeance;
+	public String getLibelle() {
+		return libelle;
 	}
 
-	public void setLibelleSeance(String libelleSeance) {
-		this.libelleSeance = libelleSeance;
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
 	}
 
-	public String getHeureDebut() {
-		return heureDebut;
+	public Date getHeure_debut() {
+		return heure_debut;
 	}
 
-	public void setHeureDebut(String heureDebut) {
-		this.heureDebut = heureDebut;
+	public void setHeure_debut(Date heure_debut) {
+		this.heure_debut = heure_debut;
 	}
 
-	public String getHeureFin() {
-		return heureFin;
+	public Date getHeure_fin() {
+		return heure_fin;
 	}
 
-	public void setHeureFin(String heureFin) {
-		this.heureFin = heureFin;
+	public void setHeure_fin(Date heure_fin) {
+		this.heure_fin = heure_fin;
 	}
 
-	public String getDate() {
-		return date;
+	public List<Cours> getCours() {
+		return cours;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setCours(List<Cours> cours) {
+		this.cours = cours;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 
 	@Override
@@ -105,30 +83,10 @@ public class Seance implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Seance other = (Seance) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (heureDebut == null) {
-			if (other.heureDebut != null)
-				return false;
-		} else if (!heureDebut.equals(other.heureDebut))
-			return false;
-		if (heureFin == null) {
-			if (other.heureFin != null)
-				return false;
-		} else if (!heureFin.equals(other.heureFin))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (libelleSeance == null) {
-			if (other.libelleSeance != null)
-				return false;
-		} else if (!libelleSeance.equals(other.libelleSeance))
 			return false;
 		return true;
 	}

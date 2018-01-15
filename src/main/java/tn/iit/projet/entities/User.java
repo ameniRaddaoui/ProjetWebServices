@@ -1,94 +1,121 @@
 package tn.iit.projet.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class User {
 
 	@Id
-	private String username;
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
+	private Long id;
+
+
+	private String nom;
+	
+	private String prenom;
+	
 	private String email;
+	
+	private String type;
+
+	private String login;
+	
 	private String password;
-	private String datenaissance;
+	
 	private String role;
-	
-	
-	public User() {
-		super();
+
+
+	public Long getId() {
+		return id;
 	}
-	public User(String username, String email, String password, String datenaissance, String role) {
-		super();
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.datenaissance = datenaissance;
-		this.setRole(role);
+
+	public void setId(Long id) {
+		this.id = id;
 	}
-	public String getUsername() {
-		return username;
+
+	public String getNom() {
+		return nom;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+
+	public void setNom(String nom) {
+		this.nom = nom;
 	}
+
+	public String getPrenom() {
+		return prenom;
+	}
+
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getDatenaissance() {
-		return datenaissance;
-	}
-	public void setDatenaissance(String datenaissance) {
-		this.datenaissance = datenaissance;
-	}
+
 	public String getRole() {
 		return role;
 	}
+
 	public void setRole(String role) {
 		this.role = role;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		User other = (User) obj;
-		if (username == null) {
-			if (other.username != null) {
+		if (id == null) {
+			if (other.id != null)
 				return false;
-			}
-		} else if (!username.equals(other.username)) {
+		} else if (!id.equals(other.id))
 			return false;
-		}
 		return true;
 	}
 
+	
 }

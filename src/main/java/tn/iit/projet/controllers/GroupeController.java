@@ -1,65 +1,83 @@
 package tn.iit.projet.controllers;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import tn.iit.projet.dao.GroupeRepositorie;
 import tn.iit.projet.entities.Groupe;
 
+
 @Controller
 @RequestMapping("admin/groupe")
 public class GroupeController {
+	
 	@Autowired
-	private GroupeRepositorie groupeRepositorie;
-
+	private GroupeRepositorie groupeDao;	
 	
-	@GetMapping
-	@ResponseBody
-	public List<Groupe> liste() {
-		return groupeRepositorie.findAll();
-
+	@RequestMapping(value = "list", method = RequestMethod.GET)
+	public ModelAndView getGroupes() {
+		
+		ModelAndView model = new ModelAndView("groupe/groupes");
+		model.addObject("groupeList", groupeDao.findAll());
+		return model;
 	}
 	
-	
-	@DeleteMapping("/{id}")
-	@ResponseBody
-	public String delete(@PathVariable Long id) {
-		groupeRepositorie.delete(id);
-		return "success";
-	}
 
 	
-	@GetMapping("/{id}")
-	@ResponseBody
-	public Groupe get(@PathVariable Long id) {
-		return groupeRepositorie.findOne(id);
+	@RequestMapping(value = "createOrUpdateGroupe", method = RequestMethod.GET)
+	public ModelAndView createOrUpdateGroupe1(@RequestParam (required = false) Long idGroupe) {
+		
+		ModelAndView model = new ModelAndView("groupe/form");
+		
+		if(idGroupe != null){			
+			model.addObject("groupeInfo", groupeDao.getOne(idGroupe)); 
+		}
+		
+		return model;			
 	}
-
 	
-	@PostMapping(value = "/")
-	@ResponseBody
-	public String createLanguage(@RequestBody Groupe groupe) {
-		groupeRepositorie.save(groupe);
-		return "success";
-	}
 
+	@RequestMapping(value = "addoredit", method = RequestMethod.POST)
+	public RedirectView createOrUpdateGroupe(@RequestParam(required= false) Long idGroupe, @RequestParam String libelle, @RequestParam String specialite, @RequestParam int niveau,
+			HttpServletRequest request) {
+		
+		Groupe groupe;
+		
+		if(idGroupe == null){
+			
+			groupe = new Groupe();
+			
+			groupe.setLibelle(libelle);
+			groupe.setSpecialite(specialite);
+			groupe.setNiveau(niveau);
+			
+			groupeDao.save(groupe);	
+		}
+		else{
+			
+			groupe = groupeDao.getOne(idGroupe);
+
+			groupe.setLibelle(libelle);
+			groupe.setSpecialite(specialite);
+			groupe.setNiveau(niveau);
+			
+			groupeDao.save(groupe);	
+		}
 	
-	@PutMapping("/")
-	@ResponseBody
-	public String editLanguage(@RequestBody Groupe groupe) {
-		groupeRepositorie.save(groupe);
-		return "success";
+		return new RedirectView("list");
 	}
 
+
+	@RequestMapping(value = "delete", method = RequestMethod.GET)
+	public RedirectView removeGroupe(@RequestParam Long idGroupe) {
+		groupeDao.delete(idGroupe);
+		return new RedirectView("list");
+	}
 }

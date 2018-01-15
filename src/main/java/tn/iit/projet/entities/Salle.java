@@ -1,38 +1,28 @@
 package tn.iit.projet.entities;
 
-import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Salle implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+public class Salle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String libelle;
-	private String etage;
+
+	private String nom;
+	
+	private int etage;
+	
 	private int capacite;
 
-	public Salle(Long id, String libelle, String etage, int capacite) {
-		super();
-		this.id = id;
-		this.libelle = libelle;
-		this.etage = etage;
-		this.capacite = capacite;
-	}
-
-	public Salle() {
-		super();
-	}
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "salle")
+	List<Cours> cours;
 
 	public Long getId() {
 		return id;
@@ -42,19 +32,19 @@ public class Salle implements Serializable {
 		this.id = id;
 	}
 
-	public String getLibelle() {
-		return libelle;
+	public String getNom() {
+		return nom;
 	}
 
-	public void setLibelle(String libelle) {
-		this.libelle = libelle;
+	public void setNom(String nom) {
+		this.nom = nom;
 	}
 
-	public String getEtage() {
+	public int getEtage() {
 		return etage;
 	}
 
-	public void setEtage(String etage) {
+	public void setEtage(int etage) {
 		this.etage = etage;
 	}
 
@@ -66,25 +56,19 @@ public class Salle implements Serializable {
 		this.capacite = capacite;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public List<Cours> getCours() {
+		return cours;
 	}
 
-	public Salle(String libelle, String etage, int capacite) {
-		super();
-		this.libelle = libelle;
-		this.etage = etage;
-		this.capacite = capacite;
+	public void setCours(List<Cours> cours) {
+		this.cours = cours;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + capacite;
-		result = prime * result + ((etage == null) ? 0 : etage.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((libelle == null) ? 0 : libelle.hashCode());
 		return result;
 	}
 
@@ -97,29 +81,13 @@ public class Salle implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Salle other = (Salle) obj;
-		if (capacite != other.capacite)
-			return false;
-		if (etage == null) {
-			if (other.etage != null)
-				return false;
-		} else if (!etage.equals(other.etage))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (libelle == null) {
-			if (other.libelle != null)
-				return false;
-		} else if (!libelle.equals(other.libelle))
-			return false;
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "Salle [id=" + id + ", libelle=" + libelle + ", etage=" + etage + ", capacite=" + capacite + "]";
-	}
-
+	
 }

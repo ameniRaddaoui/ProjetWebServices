@@ -1,69 +1,83 @@
 package tn.iit.projet.controllers;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import tn.iit.projet.dao.SalleRepositorie;
 import tn.iit.projet.entities.Salle;
 
+
 @Controller
 @RequestMapping("admin/salle")
 public class SalleController {
+	
 	@Autowired
-	private SalleRepositorie salleDao;
+	private SalleRepositorie salleDao;	
 	
-	
-	@GetMapping
-	@ResponseBody
-	public List<Salle> liste() {
-		return salleDao.findAll();
-
-	}
-
-	
-	@DeleteMapping("/{id}")
-	@ResponseBody
-	public String delete(@PathVariable Long id) {
-		salleDao.delete(id);
-		return "success";
-	}
-	
-	
-	@GetMapping("/{id}")
-	@ResponseBody
-	public Salle get(@PathVariable Long id) {
-		return salleDao.findOne(id);
-	}
-	
-	
-	@PostMapping(value = "/")
-	@ResponseBody
-	public String createLanguage(@RequestBody Salle salle) {
+	@RequestMapping(value = "list", method = RequestMethod.GET)
+	public ModelAndView getSalles() {
 		
-		salleDao.save(salle);
-
-		return "success";
+		ModelAndView model = new ModelAndView("salle/salles");
+		model.addObject("salleList", salleDao.findAll());
+		return model;
 	}
+	
 
 	
-	@PutMapping("/")
-	@ResponseBody
-	public String editSalle(@RequestBody Salle salle) {
+	@RequestMapping(value = "createOrUpdateSalle", method = RequestMethod.GET)
+	public ModelAndView createOrUpdateSalle1(@RequestParam (required = false) Long idSalle) {
 		
+		ModelAndView model = new ModelAndView("salle/form");
 		
-		salleDao.save(salle);
-		return "success";
+		if(idSalle != null){			
+			model.addObject("salleInfo", salleDao.getOne(idSalle)); 
+		}
+		
+		return model;			
+	}
+	
+
+	@RequestMapping(value = "addoredit", method = RequestMethod.POST)
+	public RedirectView createOrUpdateSalle(@RequestParam(required= false) Long idSalle, @RequestParam String nom, @RequestParam int etage, @RequestParam int capacite,
+			HttpServletRequest request) {
+		
+		Salle salle;
+		
+		if(idSalle == null){
+			
+			salle = new Salle();
+			
+			salle.setNom(nom);
+			salle.setEtage(etage);
+			salle.setCapacite(capacite);
+			
+			salleDao.save(salle);	
+		}
+		else{
+			
+			salle = salleDao.getOne(idSalle);
+
+			salle.setNom(nom);
+			salle.setEtage(etage);
+			salle.setCapacite(capacite);
+			
+			salleDao.save(salle);	
+		}
+	
+		return new RedirectView("list");
 	}
 
+
+	@RequestMapping(value = "delete", method = RequestMethod.GET)
+	public RedirectView removeSalle(@RequestParam Long idSalle) {
+		salleDao.delete(idSalle);
+		return new RedirectView("list");
+	}
 }

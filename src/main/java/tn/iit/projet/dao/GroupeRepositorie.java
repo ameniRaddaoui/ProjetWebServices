@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 import tn.iit.projet.entities.Groupe;
 @Repository
 public interface GroupeRepositorie extends JpaRepository<Groupe, Long> {
-	@Query("SELECT count(c) FROM Groupe c ")
-	long count();
+	
 }

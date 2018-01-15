@@ -1,18 +1,14 @@
 package tn.iit.projet.controllers;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import tn.iit.projet.dao.EnsignantRepositorie;
 import tn.iit.projet.entities.Enseignant;
@@ -20,47 +16,69 @@ import tn.iit.projet.entities.Enseignant;
 @Controller
 @RequestMapping("admin/enseignant")
 public class EnseignantController {
+	
 	@Autowired
-	private EnsignantRepositorie ensignantRepositorie;
+	private EnsignantRepositorie enseignantDao;	
+	
+	@RequestMapping(value = "list", method = RequestMethod.GET)
+	public ModelAndView getEnseignants() {
+		
+		ModelAndView model = new ModelAndView("enseignant/enseignants");
+		model.addObject("enseignantList", enseignantDao.findAll());
+		return model;
+	}
+	
 
 	
-	@GetMapping
-	@ResponseBody
-	public List<Enseignant> liste() {
-		return ensignantRepositorie.findAll();
-
+	@RequestMapping(value = "createOrUpdateEnseignant", method = RequestMethod.GET)
+	public ModelAndView createOrUpdateEnseignant1(@RequestParam (required = false) Long idEnseignant) {
+		
+		ModelAndView model = new ModelAndView("enseignant/form");
+		
+		if(idEnseignant != null){			
+			model.addObject("enseignantInfo", enseignantDao.getOne(idEnseignant)); 
+		}
+		
+		return model;			
 	}
-
 	
-	@DeleteMapping("/{id}")
-	@ResponseBody
-	public String delete(@PathVariable Long id) {
-		ensignantRepositorie.delete(id);
-		return "success";
-	}
 
-
-	@GetMapping("/{id}")
-	@ResponseBody
-	public Enseignant get(@PathVariable Long id) {
-		return ensignantRepositorie.findOne(id);
-	}
-
+	@RequestMapping(value = "addoredit", method = RequestMethod.POST)
+	public RedirectView createOrUpdateEnseignant(@RequestParam(required= false) Long idEnseignant, @RequestParam String nom, @RequestParam String prenom, @RequestParam String tel,
+		    @RequestParam String adresse, @RequestParam String grade, @RequestParam String email, HttpServletRequest request) {
+		
+		Enseignant enseignant;
+		
+		if(idEnseignant == null){
+			
+			enseignant = new Enseignant();
+			enseignant.setNom(nom);
+			enseignant.setPrenom(prenom);
+			enseignant.setTel(tel);
+			enseignant.setAdresse(adresse);
+			enseignant.setGrade(grade);
+			enseignant.setEmail(email);
+			enseignantDao.save(enseignant);	
+		}
+		else{
+			
+			enseignant = enseignantDao.getOne(idEnseignant);
+			enseignant.setNom(nom);
+			enseignant.setPrenom(prenom);
+			enseignant.setTel(tel);
+			enseignant.setAdresse(adresse);
+			enseignant.setGrade(grade);
+			enseignant.setEmail(email);
+			enseignantDao.save(enseignant);	
+		}
 	
-	@PostMapping(value = "/")
-	@ResponseBody
-	public String createEnsignat(@RequestBody Enseignant user) {
-		ensignantRepositorie.save(user);
-		return "success";
+		return new RedirectView("list");
 	}
 
-	
-	@PutMapping("/")
-	@ResponseBody
-	public String editEnseignant(@RequestBody Enseignant user) {
-		Enseignant e = user;
-		ensignantRepositorie.save(e);
-		return "success";
-	}
 
+	@RequestMapping(value = "delete", method = RequestMethod.GET)
+	public RedirectView removeEnseignant(@RequestParam Long idEnseignant) {
+		enseignantDao.delete(idEnseignant);
+		return new RedirectView("list");
+	}
 }
